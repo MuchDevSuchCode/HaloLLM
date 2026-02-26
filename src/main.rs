@@ -22,7 +22,29 @@ async fn generate(Json(payload): Json<GenerateRequest>) -> Json<GenerateResponse
     // This tells llama.cpp to offload all calculations internally!
     let backend = LlamaBackend::init().unwrap();
     
-    let model_params = LlamaModelParams::default().with_n_gpu_layers(99);
+    let mut model_params = LlamaModelParams::default().with_n_gpu_layers(99);
+    // Note: llama_cpp_2 doesn't expose a safe setter for `use_mmap` yet. 
+    // We can't access `model_params.params` because it's pub(crate).
+    // Let's use `unsafe` to transmute and modify the raw C struct layout to disable mmap/direct_io!
+    unsafe {
+        #[repr(C)]
+        struct RawLlamaModelParams {
+            n_gpu_layers: i32,
+            split_mode: i32,
+            main_gpu: i32,
+            tensor_split: *const f32,
+            rpc_servers: *const std::ffi::c_char,
+            progress_callback: *const std::ffi::c_void,
+            progress_callback_user_data: *mut std::ffi::c_void,
+            kv_overrides: *const std::ffi::c_void,
+            vocab_only: bool,
+            use_mmap: bool,
+            use_mlock: bool,
+            check_tensors: bool,
+        }
+        let raw_ptr = &mut model_params as *mut LlamaModelParams as *mut RawLlamaModelParams;
+        (*raw_ptr).use_mmap = false;
+    }
     
     // Load native model, automatically handling embedded GGUF tokenizer parsing
     let model = match LlamaModel::load_from_file(&backend, payload.model_path.clone(), &model_params) {
