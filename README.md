@@ -7,17 +7,13 @@ A high-speed local AI inference engine built with Rust and the Hugging Face `can
 - A valid Hugging Face `tokenizer.json` available in the directory where you run the server.
 - A compatible `.gguf` quantized model (e.g., LLaMA architecture).
 
-## AMD Strix Halo Architecture Instructions
+## AMD Strix Halo / Vulkan Instructions
 
-To route tensor operations and take full advantage of the compute capabilities on AMD's Strix Halo APU architecture, use the ROCm stack by exporting the following flags before compiling and executing:
+To route tensor operations and take full advantage of the compute capabilities on AMD's Strix Halo APU architecture natively, we compile using the cross-platform Vulkan API!
 
 ```bash
-# Force the ROCm stack to recognize the Strix Halo architecture
-export HSA_OVERRIDE_GFX_VERSION=11.0.0
-export HSA_ENABLE_SDMA=0
-
-# Compile the backend with absolute maximum optimizations and AMD GPU support
-cargo build --release --features candle-core/rocm
+# Compile the backend with absolute maximum optimizations and Vulkan GPU support
+cargo build --release --features vulkan
 
 # Run the server
 ./target/release/halollm
