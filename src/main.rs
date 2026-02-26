@@ -22,9 +22,7 @@ async fn generate(Json(payload): Json<GenerateRequest>) -> Json<GenerateResponse
     // This tells llama.cpp to offload all calculations internally!
     let backend = LlamaBackend::init().unwrap();
     
-    let model_params = LlamaModelParams::default()
-        .with_n_gpu_layers(99)
-        .with_use_mmap(false);
+    let model_params = LlamaModelParams::default().with_n_gpu_layers(99);
     
     // Load native model, automatically handling embedded GGUF tokenizer parsing
     let model = match LlamaModel::load_from_file(&backend, payload.model_path.clone(), &model_params) {
