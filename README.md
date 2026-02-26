@@ -1,13 +1,29 @@
 # HaloLLM
 
-A high-speed local AI inference engine built with Rust and the Hugging Face `candle` framework, designed to deploy `.gguf` quantized models efficiently.
+A high-speed local AI inference engine built with Rust and native `llama.cpp` bindings, designed to deploy `.gguf` quantized models with full GPU acceleration via Vulkan.
 
 ## Requirements
 - Rust toolchain (cargo, rustc).
-- A valid Hugging Face `tokenizer.json` available in the directory where you run the server.
-- A compatible `.gguf` quantized model (e.g., LLaMA architecture).
+- A compatible `.gguf` quantized model (e.g., TinyLlama, LLaMA architecture).
 
-## AMD Strix Halo / Vulkan Instructions
+## Linux Prerequisites
+
+Install the following system packages before compiling (Ubuntu/Debian):
+
+```bash
+sudo apt install -y clang libclang-dev cmake build-essential libvulkan-dev vulkan-tools glslc
+```
+
+| Package | Why it's needed |
+|---|---|
+| `clang` / `libclang-dev` | `bindgen` uses clang to generate Rust FFI bindings from C/C++ headers |
+| `cmake` | Builds the vendored `llama.cpp` C++ source tree |
+| `build-essential` | Provides `gcc`, `g++`, `make`, and standard C headers (`stdbool.h`, etc.) |
+| `libvulkan-dev` | Vulkan development headers and loader library |
+| `glslc` | Vulkan GLSL shader compiler — required by CMake to compile GPU compute shaders |
+| `vulkan-tools` | Optional — lets you verify your GPU is visible via `vulkaninfo` |
+
+## AMD Strix Halo / Vulkan Build
 
 To route tensor operations and take full advantage of the compute capabilities on AMD's Strix Halo APU architecture natively, we compile using the cross-platform Vulkan API!
 
