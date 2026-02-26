@@ -6,6 +6,12 @@ A high-speed local AI inference engine built with Rust and native `llama.cpp` bi
 - Rust toolchain (cargo, rustc).
 - A compatible `.gguf` quantized model (e.g., TinyLlama, LLaMA architecture).
 
+**Download a starter model for testing:**
+```bash
+wget https://huggingface.co/TinyLlama/TinyLlama-1.1B-Chat-v1.0/resolve/main/tokenizer.json
+wget https://huggingface.co/TheBloke/TinyLlama-1.1B-Chat-v1.0-GGUF/resolve/main/tinyllama-1.1b-chat-v1.0.Q4_K_M.gguf
+```
+
 ## Linux Prerequisites
 
 Install the following system packages before compiling (Ubuntu/Debian):
