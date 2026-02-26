@@ -1,5 +1,5 @@
 use axum::{routing::post, Json, Router};
-use llama_cpp_2::{context::params::LlamaContextParams, llama_backend::LlamaBackend, llama_model::{params::LlamaModelParams, LlamaModel}};
+use llama_cpp_2::{context::params::LlamaContextParams, llama_backend::LlamaBackend, model::{params::LlamaModelParams, LlamaModel}};
 use serde::{Deserialize, Serialize};
 use std::net::SocketAddr;
 
